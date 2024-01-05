@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace SudokuSolver
 {
@@ -16,9 +17,13 @@ namespace SudokuSolver
             { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
             { 0, 0, 5, 2, 0, 6, 3, 0, 0 }};
 
-            var sudokuSolver = new SudokuSolver(grid);
-            if (sudokuSolver.Solve())
-                Console.WriteLine(sudokuSolver.ToString());
+            var sudoku = new Sudoku(grid);
+            var sudokuSolver = new SudokuSolver();
+            Stopwatch sw = new Stopwatch();
+            var result = sudokuSolver.Solve(sudoku);
+
+            if (result.IsSolved)
+                Console.WriteLine(result.Sudoku.ToString());
             else
                 Console.WriteLine("No Solution exists");
         }
