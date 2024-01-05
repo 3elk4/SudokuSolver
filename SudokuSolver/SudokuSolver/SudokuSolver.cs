@@ -13,15 +13,15 @@ namespace SudokuSolver
 
         public SudokuSolver() { }
 
-        public Result Solve(Sudoku sudoku)
+        public Result<Sudoku> Solve(Sudoku sudoku)
         {
             EmptyCells = PrepareEmptySudokuCells(sudoku).ToList();
             return SolveBacktracing(sudoku);
         }
 
-        private Result SolveBacktracing(Sudoku sudoku)
+        private Result<Sudoku> SolveBacktracing(Sudoku sudoku)
         {
-            if (EmptyCells.Count == 0) return new Result(true, sudoku);
+            if (EmptyCells.Count == 0) return Result<Sudoku>.Ok(sudoku);
 
             var cellToCheck = EmptyCells.Last();
 
@@ -33,14 +33,14 @@ namespace SudokuSolver
                 EmptyCells.Remove(cellToCheck);
 
                 // Use recursion to check other empty sudoku cubes
-                if (SolveBacktracing(sudoku).IsSolved) return new Result(true, sudoku);
+                if (SolveBacktracing(sudoku).Success) return Result<Sudoku>.Ok(sudoku);
 
                 // Undo and check another possible value 
                 EmptyCells.Add(cellToCheck);
                 sudoku.Grid[cellToCheck.Row, cellToCheck.Col] = 0;
 
             }
-            return new Result(false, sudoku);
+            return Result<Sudoku>.Fail(sudoku, "No solution exists");
         }
 
         private bool IsLegal(Sudoku sudoku, int rowIdx, int colIdx, int num)

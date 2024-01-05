@@ -8,6 +8,6 @@ namespace SudokuSolver
 {
     interface ISudokuSolver
     {
-        public Result Solve(Sudoku sudoku);
+        public Result<Sudoku> Solve(Sudoku sudoku);
     }
 }

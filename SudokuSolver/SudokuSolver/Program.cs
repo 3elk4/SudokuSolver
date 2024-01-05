@@ -22,10 +22,10 @@ namespace SudokuSolver
             Stopwatch sw = new Stopwatch();
             var result = sudokuSolver.Solve(sudoku);
 
-            if (result.IsSolved)
-                Console.WriteLine(result.Sudoku.ToString());
+            if (result.Success)
+                Console.WriteLine(result.Value.ToString());
             else
-                Console.WriteLine("No Solution exists");
+                Console.WriteLine(result.Error);
         }
     }
 }
