@@ -16,10 +16,10 @@ namespace SudokuSolver
         public Result<Sudoku> Solve(Sudoku sudoku)
         {
             EmptyCells = PrepareEmptySudokuCells(sudoku).ToList();
-            return SolveBacktracing(sudoku);
+            return TrySolveBacktracing(sudoku);
         }
 
-        private Result<Sudoku> SolveBacktracing(Sudoku sudoku)
+        private Result<Sudoku> TrySolveBacktracing(Sudoku sudoku)
         {
             if (EmptyCells.Count == 0) return Result<Sudoku>.Ok(sudoku);
 
@@ -33,7 +33,7 @@ namespace SudokuSolver
                 EmptyCells.Remove(cellToCheck);
 
                 // Use recursion to check other empty sudoku cubes
-                if (SolveBacktracing(sudoku).Success) return Result<Sudoku>.Ok(sudoku);
+                if (TrySolveBacktracing(sudoku).Success) return Result<Sudoku>.Ok(sudoku);
 
                 // Undo and check another possible value 
                 EmptyCells.Add(cellToCheck);
@@ -61,11 +61,11 @@ namespace SudokuSolver
 
         private bool IsNumberAlreadyInSquare(Sudoku sudoku, int rowIdx, int colIdx, int num)
         {
-            int startRow = rowIdx - rowIdx % sudoku.RowSqrt;
-            int startCol = colIdx - colIdx % sudoku.ColSqrt;
+            int startRow = rowIdx - rowIdx % sudoku.ValSqrt;
+            int startCol = colIdx - colIdx % sudoku.ValSqrt;
 
-            for (int i = startRow; i < startRow + sudoku.RowSqrt; i++)
-                for (int j = startCol; j < startCol + sudoku.ColSqrt; j++)
+            for (int i = startRow; i < startRow + sudoku.ValSqrt; i++)
+                for (int j = startCol; j < startCol + sudoku.ValSqrt; j++)
                     if (sudoku.Grid[i, j] == num) return true;
 
             return false;
@@ -89,7 +89,7 @@ namespace SudokuSolver
 
         private IEnumerable<int> FindLegalNumbersForPosition(Sudoku sudoku, int rowIdx, int colIdx)
         {
-            return Enumerable.Range(1, sudoku.RowsNumber).Where(num => IsLegal(sudoku, rowIdx, colIdx, num));
+            return Enumerable.Range(1, Sudoku.MaxValue).Where(num => IsLegal(sudoku, rowIdx, colIdx, num));
         }
     }
 }
