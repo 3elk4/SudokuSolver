@@ -27,44 +27,18 @@ namespace SudokuSolver.Common
             ValSqrt = (int)Math.Sqrt(RowsNumber);
         }
 
-        public int Get(int i, int j)
-        {
-            return Grid[i, j];
-        }
+        public int Get(int i, int j) => Grid[i, j];
+        public int Get((int i, int j) x) => Grid[x.i, x.j];
+        public void Set(int i, int j, int k) => Grid[i, j] = k;
+        public void Set((int i, int j) x, int k) => Grid[x.i, x.j] = k;
 
-        public void Set(int i, int j, int k)
-        {
-            Grid[i, j] = k;
-        }
-
-        public int Get((int i, int j) x)
-        {
-            return Grid[x.i, x.j];
-        }
-
-        public void Set((int i, int j) x, int k)
-        {
-            Grid[x.i, x.j] = k;
-        }
-
-        public IEnumerable<(int i, int j)> GetEmptyCells()
-        {
-            for(int i = 0; i < RowsNumber; ++i)
-            {
-                for (int j = 0; j < ColsNumber; ++j)
-                {
-                    if (Grid[i, j] == 0) yield return (i, j);
-                }
-            }
-        }
-
-        public IEnumerable<(int i, int j)> GetNotEmptyCells()
+        public IEnumerable<(int i, int j)> GetMatchingCells(Func<int, bool> predicate)
         {
             for (int i = 0; i < RowsNumber; ++i)
             {
                 for (int j = 0; j < ColsNumber; ++j)
                 {
-                    if (Grid[i, j] != 0) yield return (i, j);
+                    if (predicate(Grid[i, j])) yield return (i, j);
                 }
             }
         }

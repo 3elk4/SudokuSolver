@@ -16,8 +16,8 @@ namespace SudokuSolver.Backtracing
         {
             EmptyCells = PrepareEmptySudokuCells(sudoku).ToList();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            
+            Stopwatch sw = Stopwatch.StartNew();
             var result = TrySolve(sudoku);
             sw.Stop();
             Console.WriteLine(sw.Elapsed);
@@ -51,7 +51,7 @@ namespace SudokuSolver.Backtracing
 
         private IEnumerable<EmptySudokuCell> PrepareEmptySudokuCells(Sudoku sudoku)
         {
-            foreach(var emptyCell in sudoku.GetEmptyCells())
+            foreach(var emptyCell in sudoku.GetMatchingCells(x => x == 0))
             {
                 var emptySudokuCell = new EmptySudokuCell(emptyCell.i, emptyCell.j);
                 emptySudokuCell.PossibleValues.AddRange(FindLegalNumbersForPosition(sudoku, emptyCell.i, emptyCell.j));

@@ -27,8 +27,7 @@ namespace SudokuSolver.CrossHatching
             int currentRemKey = 0;
             int currentRow = 0;
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            Stopwatch sw =Stopwatch.StartNew();
             var result = TrySolve(
                 sudoku,
                 currentRemKey,
@@ -44,22 +43,22 @@ namespace SudokuSolver.CrossHatching
 
         private Result<Sudoku> TrySolve(Sudoku sudoku, int currentRemKey, List<int> remainingKeys, int currentRow, List<int> rows)
         {
-            var k = remainingKeys[currentRemKey];
-            var r = rows[currentRow];
+            var value = remainingKeys[currentRemKey];
+            var row = rows[currentRow];
 
-            foreach (var c in graph[k][r])
+            foreach (var col in graph[value][row])
             {
-                if (sudoku.Get(r, c) > 0) continue;
+                if (sudoku.Get(row, col) > 0) continue;
 
-                if (IsLegal(sudoku, r, c, k))
+                if (IsLegal(sudoku, row, col, value))
                 {
-                    sudoku.Set(r, c, k);
+                    sudoku.Set(row, col, value);
 
                     if (currentRow < rows.Count - 1)
                     {
                         if (TrySolve(sudoku, currentRemKey, remainingKeys, currentRow + 1, rows).Success) return Result<Sudoku>.Ok(sudoku);
 
-                        sudoku.Set(r, c, 0);
+                        sudoku.Set(row, col, 0);
                         continue;
                     }
                     else
@@ -68,7 +67,7 @@ namespace SudokuSolver.CrossHatching
 
                         if (TrySolve(sudoku, currentRemKey + 1, remainingKeys, 0, graph[remainingKeys[currentRemKey + 1]].Keys.ToList()).Success) return Result<Sudoku>.Ok(sudoku);
 
-                        sudoku.Set(r, c, 0);
+                        sudoku.Set(row, col, 0);
                         continue;
                     }
                 }
@@ -82,7 +81,7 @@ namespace SudokuSolver.CrossHatching
             filledPos = new Dictionary<int, List<(int i, int j)>>();
             remaining = new Dictionary<int, int>();
 
-            var notEmptyCells = sudoku.GetNotEmptyCells();
+            var notEmptyCells = sudoku.GetMatchingCells(x => x != 0);
 
             foreach(var cell in notEmptyCells)
             {
@@ -106,7 +105,7 @@ namespace SudokuSolver.CrossHatching
         {
             graph = new Dictionary<int, Dictionary<int, List<int>>>();
 
-            var emptyCells = sudoku.GetEmptyCells();
+            var emptyCells = sudoku.GetMatchingCells(x => x == 0);
             foreach(var kvpair in filledPos)
             {
                 var k = kvpair.Key;

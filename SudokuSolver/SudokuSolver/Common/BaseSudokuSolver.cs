@@ -1,32 +1,28 @@
 ﻿using Microsoft.Toolkit.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SudokuSolver.Common
 {
-    public abstract class BaseSudokuSolver : ISudokuSolver
+    public abstract class BaseSudokuSolver
     {
-        protected bool IsLegal(Sudoku sudoku, int rowIdx, int colIdx, int num)
+        protected virtual bool IsLegal(Sudoku sudoku, int rowIdx, int colIdx, int num)
         {
             return !IsNumberAlreadyInRow(sudoku, rowIdx, num) &&
                    !IsNumberAlreadyInCol(sudoku, colIdx, num) &&
                    !IsNumberAlreadyInSquare(sudoku, rowIdx, colIdx, num);
         }
 
-        private bool IsNumberAlreadyInRow(Sudoku sudoku, int rowIdx, int num)
+        public virtual bool IsNumberAlreadyInRow(Sudoku sudoku, int rowIdx, int num)
         {
             return sudoku.Grid.GetRow(rowIdx).Count(n => n == num) > 0;
         }
 
-        private bool IsNumberAlreadyInCol(Sudoku sudoku, int colIdx, int num)
+        public virtual bool IsNumberAlreadyInCol(Sudoku sudoku, int colIdx, int num)
         {
             return sudoku.Grid.GetColumn(colIdx).Count(n => n == num) > 0;
         }
 
-        private bool IsNumberAlreadyInSquare(Sudoku sudoku, int rowIdx, int colIdx, int num)
+        public virtual bool IsNumberAlreadyInSquare(Sudoku sudoku, int rowIdx, int colIdx, int num)
         {
             int startRow = rowIdx - rowIdx % sudoku.ValSqrt;
             int startCol = colIdx - colIdx % sudoku.ValSqrt;
