@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SudokuSolver
+namespace SudokuSolver.Common
 {
     public class Sudoku
     {
@@ -25,6 +25,27 @@ namespace SudokuSolver
             //if (Math.Sqrt(RowsNumber) % 1 != 0) throw new ArgumentException("Matrix should be perfect square.");
 
             ValSqrt = (int)Math.Sqrt(RowsNumber);
+        }
+
+        public int Get(int i, int j) => Grid[i, j];
+        public int Get((int i, int j) x) => Grid[x.i, x.j];
+        public void Set(int i, int j, int k) => Grid[i, j] = k;
+        public void Set((int i, int j) x, int k) => Grid[x.i, x.j] = k;
+
+        public IEnumerable<(int i, int j)> GetMatchingCells(Func<int, bool> predicate)
+        {
+            for (int i = 0; i < RowsNumber; ++i)
+            {
+                for (int j = 0; j < ColsNumber; ++j)
+                {
+                    if (predicate(Grid[i, j])) yield return (i, j);
+                }
+            }
+        }
+
+        public Sudoku Clone()
+        {
+            return new Sudoku((int[,])Grid.Clone());
         }
 
         public override string ToString()
